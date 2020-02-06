@@ -27,8 +27,6 @@ class ProfileController extends Controller
       $profile = new Profile;
       $form = $request->all();
       
-      
-      
       unset($form['_token']);
       
        $profile->fill($form);
@@ -43,10 +41,8 @@ class ProfileController extends Controller
     public function edit(Request $request)
     {
       $profile = Profile::find($request->id);
-      if (empty($profile)) {
-        abort(404);
-      }
-      return view('admin.profile.edit', ['profile_form' => $profile]);
+      
+      return view('admin.profile.edit',['profile_form' => $profile]);
     }
     
     public function update(Request $request)
