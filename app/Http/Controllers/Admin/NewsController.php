@@ -58,7 +58,7 @@ class NewsController extends Controller
       // News Modelからデータを取得する
       $news = News::find($request->id);
       if (empty($news)) {
-        abort(404);    
+        abort(404);
       }
       return view('admin.news.edit', ['news_form' => $news]);
   }
@@ -83,7 +83,7 @@ class NewsController extends Controller
       unset($news_form['_token']);
       // 該当するデータを上書きして保存する
       $news->fill($news_form)->save();
-
+      
       return redirect('admin/news');
   }
   
