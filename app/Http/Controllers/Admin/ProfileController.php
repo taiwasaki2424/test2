@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Profile;
+use Carbon\Carbon;
+use App\ProfileHistory;
+
 
 class ProfileController extends Controller
 {
@@ -15,10 +18,6 @@ class ProfileController extends Controller
       return view('admin.profile.create');
     }
     
-    // public function create()
-    // {
-    //   return redirect('admin/profile/create');
-    // }
     
      public function create(Request $request)
     {
@@ -45,18 +44,42 @@ class ProfileController extends Controller
       return view('admin.profile.edit',['profile_form' => $profile]);
     }
     
+    
+    public function index(Request $request)
+    {
+      $cond_name = $request->cond_name;
+      if($cond_name !=''){
+        $posts = Profile::where('name',$cond_name)->get();
+      } else {
+        $posts = Profile::all();
+      }
+      return view('admin.profile.index',['posts' => $posts, 'cond_name' => $cond_name]);
+    }
+    
+    
     public function update(Request $request)
     {
       $this->validate($request, Profile::$rules);
       $profile = Profile::find($request->id);
       $profile_form = $request->all();
       unset($profile_form['_token']);
+      unset($profile_form['remove']);
       // 該当するデータを上書きして保存する
       $profile->fill($profile_form)->save();
       
-      return redirect('admin/profile/edit');
+      $profilehistory = new ProfileHistory;
+      $profilehistory->profiles_id = $profile->id;
+      $profilehistory->edited_at = Carbon::now();
+      $profilehistory->save();
+      
+      return redirect('admin/profile');
     }
     
-    
+    public function delete(Request $request)
+    {
+      $profile = Profile::find($request->id);
+      $profile->delete();
+      return redirect('admin/profile/');
+    }
     
 }
