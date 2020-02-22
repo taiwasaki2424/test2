@@ -8,7 +8,7 @@ class ProfileHistory extends Model
 {
   protected $guardedb = array('id');
      public static $rules = array(
-      'profiles_id' => 'required',
+      'profile_id' => 'required',
       'edited_at' => 'required',
       );
      
